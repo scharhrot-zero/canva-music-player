@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Music Player</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: transparent;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: Arial, sans-serif;
+    }
+
+    .player {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #playButton {
+      width: 64px;
+      height: 64px;
+      border: 0;
+      border-radius: 50%;
+      background: #ffffff;
+      color: #222222;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      line-height: 1;
+      padding: 0;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    #playButton:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22);
+    }
+
+    #playButton:active {
+      transform: scale(0.97);
+    }
+
+    #playButton:focus-visible {
+      outline: 2px solid #555;
+      outline-offset: 4px;
+    }
+
+    /* Pause icon */
+    #playButton.playing {
+      font-size: 21px;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="player">
+    <audio id="audio" loop preload="auto">
+      <!-- Replace "music.mp3" with your audio filename or hosted audio URL -->
+      <source src="music.mp3" type="audio/mpeg">
+      Your browser does not support HTML audio.
+    </audio>
+
+    <button id="playButton" type="button" aria-label="Play music" aria-pressed="false">
+      ▶
+    </button>
+
+    <span class="sr-only" id="status">Music paused</span>
+  </div>
+
+  <script>
+    const audio = document.getElementById("audio");
+    const button = document.getElementById("playButton");
+    const status = document.getElementById("status");
+
+    button.addEventListener("click", async () => {
+      try {
+        if (audio.paused) {
+          await audio.play();
+        } else {
+          audio.pause();
+        }
+      } catch (error) {
+        console.error("Unable to play audio:", error);
+      }
+    });
+
+    audio.addEventListener("play", () => {
+      button.textContent = "Ⅱ";
+      button.classList.add("playing");
+      button.setAttribute("aria-label", "Pause music");
+      button.setAttribute("aria-pressed", "true");
+      status.textContent = "Music playing";
+    });
+
+    audio.addEventListener("pause", () => {
+      button.textContent = "▶";
+      button.classList.remove("playing");
+      button.setAttribute("aria-label", "Play music");
+      button.setAttribute("aria-pressed", "false");
+      status.textContent = "Music paused";
+    });
+
+    audio.addEventListener("error", () => {
+      console.error("Audio file could not be loaded. Check the music.mp3 path or URL.");
+    });
+  </script>
+</body>
+</html>
